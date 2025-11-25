@@ -1,4 +1,7 @@
 # PAN Card Validation System
+![PAN](PAN.jpg)
+
+
 ### SQL-Based Data Integrity & Pattern Recognition Framework
 
 ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white) ![Data Quality](https://img.shields.io/badge/Data%20Quality-Verified-green?style=for-the-badge) ![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
