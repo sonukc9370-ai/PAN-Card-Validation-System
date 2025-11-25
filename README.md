@@ -52,7 +52,7 @@ IGNORE 1 ROWS;
 
 ---
 
-## 🛡️ Error Handling & Data Verification
+## 🛡️ Error Handling
 
 ### ✅ Verify Data Load
 Ensure that the data has been successfully inserted:
