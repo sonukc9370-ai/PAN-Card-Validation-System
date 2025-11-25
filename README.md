@@ -35,6 +35,43 @@ This repository hosts a robust **SQL-based validation system** designed to sanit
 
 ---
 
+## 🗂️ Schema Setup
+
+```sql
+DROP TABLE IF EXISTS PAN_VALIDATION;
+
+CREATE TABLE PAN_VALIDATION (
+    PAN_NUMBER VARCHAR(20)
+);
+
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/PAN Number Validation Dataset.csv'
+INTO TABLE PAN_VALIDATION
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+```
+
+---
+
+## 🛡️ Error Handling & Data Verification
+
+### ✅ Verify Data Load
+Ensure that the data has been successfully inserted:
+```sql
+SELECT COUNT(*) AS loaded_records 
+FROM PAN_VALIDATION;
+```
+
+### ✔️ Commit Changes  
+If the record count is correct and the data load is successful:
+```sql
+COMMIT;
+```
+
+### ❌ Rollback on Failure  
+If any issues or inconsistencies are detected:
+```sql
+ROLLBACK;
+```
 
 ## 🛠️ Technical Architecture
 
@@ -73,7 +110,7 @@ The system uses two deterministic functions to catch "fake" data that follows th
 **Function 1: Check Adjacent Characters**
 ```sql
 DELIMITER $$
-CREATE FUNCTION Check_adjacent_Char(input_str VARCHAR(20))
+CREATE FUNCTION Check_Adjacent_Char(input_str VARCHAR(20))
 RETURNS TINYINT
 DETERMINISTIC
 BEGIN
@@ -103,7 +140,7 @@ DELIMITER ;
 **Function 2: Check Sequential Characters**
 ```sql
 DELIMITER $$
-CREATE FUNCTION Check_sequential_Char(input_str VARCHAR(20))
+CREATE FUNCTION Check_Sequential_Char(input_str VARCHAR(20))
 RETURNS TINYINT
 DETERMINISTIC
 BEGIN
@@ -147,14 +184,14 @@ WITH
     Cte_Validated_Pan As (
         SELECT *
         FROM Cte_Cleaned_PAN
-        WHERE Check_adjacent_Char(PAN_NUMBER) = 0
-        AND Check_sequential_Char(SUBSTRING(PAN_NUMBER,1,5)) = 0
+        WHERE Check_Adjacent_Char(PAN_NUMBER) = 0
+        AND Check_Sequential_Char(SUBSTRING(PAN_NUMBER,1,5)) = 0
         AND Check_sequential_Char(SUBSTRING(PAN_NUMBER,6,4)) = 0
         AND REGEXP_LIKE(PAN_NUMBER,'^[A-Z]{5}[0-9]{4}[A-Z]$')
     )
 SELECT
     ccp.PAN_NUMBER,
-    CASE WHEN cvp.PAN_NUMBER IS NULL THEN 'Valid PAN'
+    CASE WHEN cvp.PAN_NUMBER IS NOT NULL THEN 'Valid PAN'
          ELSE 'Invalid PAN'
     END Category
 FROM
